@@ -3,11 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solwix AI — Академический помощник</title>
+    <title>Solwix AI — Академический помощник (Powered by Gemini)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Анимация пульсации для логотипа Gemini */
+        @keyframes gemini-pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .gemini-logo-anim {
+            animation: gemini-pulse 2s infinite ease-in-out;
+        }
+        /* Анимация появления для рекламного блока */
+        @keyframes fade-in-up {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fade-in-up 0.8s ease-out forwards;
+        }
+    </style>
 </head>
 <body class="bg-slate-50 text-slate-800 font-['Inter'] h-screen flex flex-col overflow-hidden">
 
@@ -17,6 +35,7 @@
                 <i data-lucide="graduation-cap" class="w-6 h-6"></i>
                 <h1 class="text-xl font-bold tracking-tight text-slate-900">Solwix <span class="font-light text-blue-600">AI</span></h1>
             </div>
+            <span class="hidden md:inline text-[11px] text-slate-400 uppercase tracking-wider font-medium ml-2">Powered by Gemini AI</span>
         </div>
 
         <div class="flex items-center gap-3">
@@ -46,17 +65,44 @@
                         <i data-lucide="send" class="w-5 h-5"></i>
                     </button>
                 </div>
-                <p class="text-center text-[10px] text-slate-400 mt-3 uppercase tracking-widest font-medium">Powered by Solwix Engine</p>
+                <p class="text-center text-[10px] text-slate-400 mt-3 uppercase tracking-widest font-medium">© Solwix Engine</p>
             </div>
         </main>
 
-        <aside class="hidden lg:flex w-72 bg-white border-l border-slate-200 flex-col shrink-0">
-            <div class="p-5 border-b border-slate-100 flex items-center gap-2 font-semibold text-slate-700">
-                <i data-lucide="zap" class="text-blue-600 w-5 h-5"></i>
-                Инструменты
-            </div>
-            <div id="tools-container" class="p-4 space-y-3">
+        <aside class="hidden lg:flex w-80 bg-white border-l border-slate-200 flex-col shrink-0 overflow-y-auto">
+            
+            <div class="p-6 m-4 mt-6 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl text-white shadow-xl animate-fade-in border border-blue-700">
+                <div class="flex items-center gap-4 mb-5">
+                    <div class="p-3 bg-white/20 rounded-2xl border border-white/30 shadow-inner gemini-logo-anim">
+                        <i data-lucide="brain-circuit" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xs text-blue-200 uppercase tracking-widest font-bold">Collab Partner</h3>
+                        <p class="text-2xl font-extrabold tracking-tight">Gemini AI</p>
+                    </div>
                 </div>
+                
+                <p class="text-sm text-blue-100 leading-relaxed mb-6 font-medium">
+                    Этот проект был создан в <strong class="text-white">соавторстве с Gemini AI</strong>. Наша разработка заняла всего <strong class="text-white font-bold text-lg">1 ВЕЧЕР</strong> вместо месяца работы целой команды. Мы доказали: ИИ + Идея = Мгновенный результат!
+                </p>
+                
+                <a href="https://gemini.google.com" target="_blank" class="block text-center w-full bg-white text-blue-700 font-bold py-3.5 px-6 rounded-xl hover:bg-blue-50 hover:shadow-lg transition-all text-sm group">
+                    Попробовать силу Gemini 
+                    <i data-lucide="arrow-right" class="w-4 h-4 inline ml-1 group-hover:translate-x-1 transition-transform"></i>
+                </a>
+            </div>
+
+            <div class="p-5 border-t border-slate-100 mt-2 flex items-center gap-2 font-semibold text-slate-700">
+                <i data-lucide="zap" class="text-blue-600 w-5 h-5"></i>
+                Быстрые инструменты
+            </div>
+
+            <div id="tools-container" class="p-4 space-y-3 flex-1">
+                </div>
+
+            <div class="p-4 mt-auto border-t border-slate-100 bg-slate-50 text-center">
+                <p class="text-[10px] text-slate-500 uppercase tracking-widest">Solwix & Gemini. 2024</p>
+            </div>
         </aside>
     </div>
 
