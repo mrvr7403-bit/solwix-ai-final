@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Solwix AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-slate-50 h-screen flex flex-col overflow-hidden">
+    <header class="p-4 bg-white border-b flex justify-between items-center shadow-sm">
+        <div class="flex items-center gap-2 text-blue-600 font-bold text-xl">
+            <i data-lucide="graduation-cap"></i> Solwix AI
+        </div>
+        <div class="flex gap-2">
+            <select id="level-select" class="p-2 border rounded-lg text-sm bg-blue-600 text-white outline-none">
+                <option value="easy">Младшая школа</option>
+                <option value="medium" selected>Средняя школа</option>
+                <option value="hard">Профи / ВУЗ</option>
+            </select>
+            <select id="subject-select" class="p-2 border rounded-lg text-sm outline-none">
+                <option value="math">Математика</option>
+                <option value="physics">Физика</option>
+                <option value="languages">Языки</option>
+            </select>
+        </div>
+    </header>
+    <main id="chat" class="flex-1 overflow-y-auto p-6 space-y-4"></main>
+    <footer class="p-4 bg-white border-t">
+        <div class="max-w-4xl mx-auto flex gap-2">
+            <textarea id="input" placeholder="Спроси Solwix..." class="w-full p-3 border rounded-xl resize-none outline-none focus:border-blue-500" rows="1"></textarea>
+            <button id="send" class="p-4 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all"><i data-lucide="send"></i></button>
+        </div>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>

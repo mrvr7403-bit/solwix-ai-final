@@ -1,0 +1,6 @@
+.msg { max-width: 80%; padding: 12px 16px; border-radius: 15px; line-height: 1.5; }
+.msg-ai { background: white; border: 1px solid #e2e8f0; align-self: flex-start; }
+.msg-user { background: #2563eb; color: white; align-self: flex-end; }
+#chat { display: flex; flex-direction: column; }
+/* Математические формулы */
+pre { background: #1e293b; color: white; padding: 10px; border-radius: 8px; margin: 10px 0; overflow-x: auto; }
