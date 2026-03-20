@@ -5,35 +5,35 @@ export default async function handler(req, res) {
     const { message, subject, level, history } = req.body;
     const apiKey = process.env.GEMINI_KEY;
 
-    if (!apiKey) return res.status(200).json({ text: "Ошибка: Ключ не найден в Vercel." });
+    if (!apiKey) return res.status(200).json({ text: "Ошибка: Ключ не найден." });
 
-    // Используем gemini-1.5-pro-latest — это самая мощная и стабильная модель
-    const model = "gemini-1.5-pro-latest"; 
+    // Самое простое название, которое существует с первого дня
+    const model = "gemini-pro"; 
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-
-    const payload = {
-      contents: [
-        { role: "user", parts: [{ text: `Ты — Solwix AI, академический помощник. Предмет: ${subject}. Уровень: ${level}. Отвечай на русском.` }] },
-        { role: "model", parts: [{ text: "Понял! Я Solwix AI, готов помочь." }] },
-        ...(history || []).map(m => ({ 
-            role: m.role === 'model' ? 'model' : 'user', 
-            parts: [{ text: m.parts[0].text }] 
-        })),
-        { role: "user", parts: [{ text: message }] }
-      ]
-    };
 
     const response = await fetch(apiUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      body: JSON.stringify({
+        contents: [
+          { role: "user", parts: [{ text: `Ты — Solwix AI. Предмет: ${subject}. Уровень: ${level}.` }] },
+          { role: "model", parts: [{ text: "Окей!" }] },
+          ...(history || []).map(m => ({ role: m.role, parts: [{ text: m.parts[0].text }] })),
+          { role: "user", parts: [{ text: message }] }
+        ]
+      })
     });
 
     const data = await response.json();
 
     if (data.error) {
-      // Если даже Pro-модель выдает 404, значит Google капризничает с регионом
-      return res.status(200).json({ text: `Google (Pro) говорит: ${data.error.message} (Код: ${data.error.code})` });
+      // Если ОПЯТЬ 404, мы заставим его выплюнуть список того, что он ВООБЩЕ умеет
+      if (data.error.code === 404) {
+        return res.status(200).json({ 
+          text: `Google опять вредничает (404). Он не видит модель '${model}'. Попробуй написать в чат слово 'СПИСОК', чтобы я попробовал найти доступные модели.` 
+        });
+      }
+      return res.status(200).json({ text: `Google выдал: ${data.error.message}` });
     }
 
     const aiText = data.candidates?.[0]?.content?.parts?.[0]?.text || "Пусто.";
