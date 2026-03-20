@@ -1,15 +1,20 @@
-/* Пульсация логотипа в шапке при наведении */
-.logo-wrapper { transition: transform 0.3s ease-in-out; }
-.logo-container:hover .logo-wrapper { transform: rotate(15deg) scale(1.1); }
+/* Анимация вращающейся звезды логотипа */
+.thinking-star {
+    animation: rotate-star 1.5s infinite linear;
+}
 
-/* Кастомный, ровный скроллбар */
-::-webkit-scrollbar { width: 6px; }
+@keyframes rotate-star {
+    from { transform: rotate(0deg) scale(0.9); opacity: 0.6; }
+    50% { transform: rotate(180deg) scale(1.1); opacity: 1; }
+    to { transform: rotate(360deg) scale(0.9); opacity: 0.6; }
+}
+
+/* Скроллбар */
+::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
-::-webkit-scrollbar-track { background: #f8fafc; }
 
-/* Служебный класс для скрытия/показа */
 .hidden { display: none !important; }
 
-/* Стиль блоков ответов */
-.ai-message-bubble { background: white; border: 1px solid #e2e8f0; }
-.user-message-bubble { background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); color: white; }
+/* Сообщения */
+.ai-bubble { background: white; border: 1px solid #e2e8f0; border-radius: 20px 20px 20px 4px; }
+.user-bubble { background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); color: white; border-radius: 20px 20px 4px 20px; }
