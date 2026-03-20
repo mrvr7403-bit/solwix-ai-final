@@ -1,42 +1,35 @@
-/* Пульсация логотипа */
-.logo-pulse { transition: transform 0.3s ease; }
-.logo-pulse:hover { transform: scale(1.1); filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.4)); }
-
-/* Анимация "ИИ думает" */
-.typing-indicator {
-    display: flex;
-    gap: 6px;
-    padding: 12px 20px;
-    width: fit-content;
-    align-items: center;
+/* Анимация лого в шапке */
+.logo-container:hover .logo-wrapper {
+    transform: rotate(15deg) scale(1.1);
 }
-.typing-dot {
-    width: 7px;
-    height: 7px;
-    background: linear-gradient(45deg, #6366f1, #a855f7);
-    border-radius: 50%;
-    opacity: 0.3;
-    animation: typing-bounce 1.4s infinite ease-in-out both;
-}
-.typing-dot:nth-child(1) { animation-delay: -0.32s; }
-.typing-dot:nth-child(2) { animation-delay: -0.16s; }
-
-@keyframes typing-bounce {
-    0%, 80%, 100% { transform: translateY(0); opacity: 0.3; }
-    40% { transform: translateY(-6px); opacity: 1; box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3); }
+.logo-wrapper {
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-/* Баннер Gemini */
-.gemini-promo {
-    background: rgba(99, 102, 241, 0.03);
-    border: 1px solid rgba(99, 102, 241, 0.1);
-    backdrop-filter: blur(10px);
-    transition: all 0.3s ease;
-}
-.gemini-promo:hover {
-    border-color: rgba(168, 85, 247, 0.3);
-    background: rgba(99, 102, 241, 0.05);
+/* Анимация вращения при раздумьях */
+.thinking-logo {
+    animation: spin-and-glow 2s infinite linear;
 }
 
-/* Служебные классы */
+@keyframes spin-and-glow {
+    0% { transform: rotate(0deg) scale(1); filter: drop-shadow(0 0 5px rgba(99, 102, 241, 0.5)); }
+    50% { transform: rotate(180deg) scale(1.2); filter: drop-shadow(0 0 15px rgba(168, 85, 247, 0.8)); }
+    100% { transform: rotate(360deg) scale(1); filter: drop-shadow(0 0 5px rgba(99, 102, 241, 0.5)); }
+}
+
+/* Кастомный скроллбар */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+
 .hidden { display: none !important; }
+
+/* Стиль сообщений */
+.ai-bubble {
+    background: white;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+}
+.user-bubble {
+    background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+    color: white;
+}
