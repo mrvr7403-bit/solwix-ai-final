@@ -7,21 +7,18 @@ const TOOLS = [
     { name: 'Конспект', icon: 'book-open', prompt: 'Сделай краткий конспект: ' }
 ];
 
-// Глобальное состояние
 let currentUser = null;
 let chats = []; 
 let currentChatId = null;
 let currentAbortController = null;
 let isThinking = false;
 
-// DOM элементы
 const chatMessages = document.getElementById('chat-messages');
 const chatScrollArea = document.getElementById('chat-scroll-area');
 const chatInput = document.getElementById('chat-input');
 const sendBtn = document.getElementById('send-btn');
 const typingIndicator = document.getElementById('ai-typing-indicator');
 
-// --- ИНИЦИАЛИЗАЦИЯ ---
 function init() {
     loadUser();
     loadChats();
@@ -36,7 +33,7 @@ function init() {
     });
 }
 
-// --- СИСТЕМА АККАУНТОВ ---
+// --- АВТОРИЗАЦИЯ ---
 window.showAuthModal = () => document.getElementById('auth-modal').classList.remove('hidden');
 window.hideAuthModal = () => document.getElementById('auth-modal').classList.add('hidden');
 
@@ -74,7 +71,7 @@ function updateProfileUI() {
     }
 }
 
-// --- УПРАВЛЕНИЕ ЧАТАМИ ---
+// --- ЧАТЫ ---
 function loadChats() {
     const key = currentUser ? `chats_${currentUser}` : 'chats_guest';
     const saved = localStorage.getItem(key);
@@ -93,7 +90,7 @@ window.createNewChat = () => {
     const newChat = {
         id: Date.now(),
         title: 'Новый диалог',
-        messages: [{ role: 'model', parts: [{ text: "Привет! Я **Solwix AI**. Чем могу помочь сегодня?" }] }],
+        messages: [{ role: 'model', parts: [{ text: "Привет! Я **Solwix AI**. Выбери предмет сверху и задай мне любой вопрос!" }] }],
         language: 'ru'
     };
     chats.unshift(newChat);
@@ -104,6 +101,7 @@ window.selectChat = (id) => {
     currentChatId = id;
     renderChatsList();
     renderMessages();
+    setTimeout(() => { chatScrollArea.scrollTop = chatScrollArea.scrollHeight; }, 50);
 };
 
 window.deleteChat = (id, event) => {
@@ -131,10 +129,8 @@ function renderChatsList() {
     if (window.lucide) lucide.createIcons();
 }
 
-// --- ИНСТРУМЕНТЫ И РЕНДЕР ---
 function renderTools() {
-    const container = document.getElementById('tools-container');
-    container.innerHTML = TOOLS.map(tool => `
+    document.getElementById('tools-container').innerHTML = TOOLS.map(tool => `
         <button onclick="useTool('${tool.prompt}')" class="flex items-center gap-3 p-3 w-full text-left bg-white border border-slate-100 rounded-xl hover:border-indigo-300 hover:bg-indigo-50 transition-all group shadow-sm">
             <i data-lucide="${tool.icon}" class="w-4 h-4 text-slate-400 group-hover:text-indigo-600 transition-colors"></i>
             <span class="text-[11px] font-bold text-slate-600">${tool.name}</span>
@@ -166,10 +162,9 @@ function renderMessages() {
     `).join('');
     
     if (window.lucide) lucide.createIcons();
-    chatScrollArea.scrollTop = chatScrollArea.scrollHeight;
 }
 
-// --- ЛОГИКА ОТПРАВКИ И СТОП ---
+// --- ЛОГИКА ОТПРАВКИ И АНИМАЦИИ ПЕЧАТИ ---
 function detectLanguage(text) {
     return /^[A-Za-z0-9\s.,!?-]+$/.test(text.slice(0, 20)) ? 'en' : 'ru';
 }
@@ -186,12 +181,15 @@ async function sendMessage() {
     const activeChat = chats.find(c => c.id === currentChatId);
     const text = chatInput.value.trim();
     
-    // ЛОГИКА ОСТАНОВКИ И УДАЛЕНИЯ ИЗ ИСТОРИИ
+    // ЛОГИКА ОСТАНОВКИ
     if (isThinking) {
         if (currentAbortController) currentAbortController.abort();
-        activeChat.messages.pop(); // Удаляем сообщение пользователя
-        typingIndicator.classList.add('hidden');
         
+        const lastMsg = activeChat.messages[activeChat.messages.length - 1];
+        if (lastMsg && lastMsg.role === 'model') activeChat.messages.pop(); // Удаляем обрывок ИИ
+        activeChat.messages.pop(); // Удаляем запрос пользователя
+        
+        typingIndicator.classList.add('hidden');
         activeChat.messages.push({ 
             role: 'system', 
             parts: [{ text: `<span class="text-slate-400 italic text-[10px] opacity-50 tracking-widest uppercase aborted-message bg-slate-100 px-3 py-1 rounded-full">Запрос отменен</span>` }] 
@@ -206,7 +204,6 @@ async function sendMessage() {
 
     if (!text) return;
 
-    // Авто-название и язык
     if (activeChat.messages.length <= 1) {
         activeChat.title = text.slice(0, 15) + (text.length > 15 ? '...' : '');
         activeChat.language = detectLanguage(text);
@@ -222,6 +219,7 @@ async function sendMessage() {
     chatInput.value = '';
     renderMessages();
     typingIndicator.classList.remove('hidden');
+    chatScrollArea.scrollTop = chatScrollArea.scrollHeight;
 
     try {
         const response = await fetch('/api/chat', {
@@ -238,29 +236,64 @@ async function sendMessage() {
 
         const data = await response.json();
         typingIndicator.classList.add('hidden');
-        activeChat.messages.push({ role: 'model', parts: [{ text: data.text }] });
+        
+        // --- ЭФФЕКТ ПЕЧАТАНИЯ ---
+        const aiMessage = { role: 'model', parts: [{ text: "" }] };
+        activeChat.messages.push(aiMessage);
+        renderMessages();
+
+        const messageNodes = chatMessages.querySelectorAll('.ai-bubble');
+        const targetNode = messageNodes[messageNodes.length - 1];
+        
+        let fullText = data.text || "Ошибка получения текста.";
+        let currentText = "";
+        let i = 0;
+        const chunkSize = 2; // Символов за раз
+
+        await new Promise((resolve) => {
+            const typeInterval = setInterval(() => {
+                if (!isThinking) { // Если нажали СТОП во время печати
+                    clearInterval(typeInterval);
+                    resolve();
+                    return;
+                }
+
+                currentText += fullText.slice(i, i + chunkSize);
+                i += chunkSize;
+                aiMessage.parts[0].text = currentText;
+                
+                // Курсор
+                targetNode.innerHTML = formatContent(currentText) + '<span class="inline-block w-1 h-3 ml-1 bg-indigo-400 animate-pulse align-middle rounded-sm"></span>';
+
+                if (i >= fullText.length) {
+                    clearInterval(typeInterval);
+                    aiMessage.parts[0].text = fullText;
+                    targetNode.innerHTML = formatContent(fullText); // Убираем курсор
+                    resolve();
+                }
+            }, 10); // Скорость печати (10 мс на кадр)
+        });
         
     } catch (err) {
         if (err.name !== 'AbortError') {
             typingIndicator.classList.add('hidden');
             activeChat.messages.push({ role: 'system', parts: [{ text: `<span class="text-red-400 text-[10px] uppercase">Ошибка API</span>` }] });
+            renderMessages();
         }
     } finally {
-        if (isThinking) { // Если не было прервано вручную
+        if (isThinking) { 
             updateButtonState(false);
-            renderMessages();
             saveChats();
         }
     }
 }
 
-// --- ПОДЕЛИТЬСЯ ---
 window.shareChat = async () => {
     const activeChat = chats.find(c => c.id === currentChatId);
     if (!activeChat) return;
 
     const chatText = activeChat.messages
-        .filter(m => m.role !== 'system') // Не шарим системные ошибки/отмены
+        .filter(m => m.role !== 'system')
         .map(m => `${m.role === 'user' ? 'Я' : 'Solwix AI'}: ${m.parts[0].text}`)
         .join('\n\n');
 
@@ -273,5 +306,4 @@ window.shareChat = async () => {
     }
 };
 
-// Запуск
 document.addEventListener('DOMContentLoaded', init);

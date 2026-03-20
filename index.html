@@ -24,20 +24,36 @@
                     <polygon points="50,5 60,40 95,50 60,60 50,95 40,60 5,50 40,40" fill="url(#grad-solwix)" />
                 </svg>
             </div>
-            <h1 class="text-xl font-bold text-slate-900">Solwix <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-500">AI</span></h1>
+            <h1 class="text-xl font-bold text-slate-900 hidden sm:block">Solwix <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-500">AI</span></h1>
         </div>
 
         <div class="flex gap-2">
-            <select id="subject-select" class="bg-slate-50 border border-slate-200 py-2 px-3 rounded-lg text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500 transition-all shadow-sm">
-                <option value="Математика">Математика</option>
+            <select id="subject-select" class="bg-slate-50 border border-slate-200 py-2 px-3 rounded-lg text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500 transition-all shadow-sm w-32 sm:w-auto truncate">
+                <option value="Математика" selected>Математика</option>
+                <option value="Алгебра">Алгебра</option>
+                <option value="Геометрия">Геометрия</option>
+                <option value="Информатика">Информатика</option>
                 <option value="Физика">Физика</option>
+                <option value="Химия">Химия</option>
+                <option value="Биология">Биология</option>
+                <option value="География">География</option>
                 <option value="История">История</option>
-                <option value="English">English</option>
+                <option value="Обществознание">Обществознание</option>
+                <option value="Русский язык">Русский язык</option>
+                <option value="Литература">Литература</option>
+                <option value="Английский язык">Английский язык</option>
+                <option value="Экономика">Экономика</option>
+                <option value="Право">Право</option>
+                <option value="Астрономия">Астрономия</option>
             </select>
-            <select id="level-select" class="bg-indigo-50 border border-indigo-100 text-indigo-700 py-2 px-3 rounded-lg text-sm font-medium outline-none shadow-sm">
-                <option value="Младшая школа">Младшая</option>
-                <option value="Средняя школа" selected>Средняя</option>
-                <option value="Профи/ВУЗ">Профи/ВУЗ</option>
+
+            <select id="level-select" class="bg-indigo-50 border border-indigo-100 text-indigo-700 py-2 px-3 rounded-lg text-sm font-medium outline-none shadow-sm w-32 sm:w-auto truncate">
+                <option value="Начальная школа (1-4 кл)">Начальная школа</option>
+                <option value="Средняя школа (5-9 кл)" selected>Средняя школа</option>
+                <option value="Старшая школа (10-11 кл)">Старшая школа</option>
+                <option value="Колледж / СПО">Колледж / СПО</option>
+                <option value="ВУЗ (Бакалавриат)">ВУЗ (Бакалавриат)</option>
+                <option value="ВУЗ (Магистратура)">ВУЗ (Магистратура)</option>
             </select>
         </div>
     </header>
@@ -61,8 +77,7 @@
                     <i data-lucide="plus-square" class="w-4 h-4"></i>
                 </button>
             </div>
-            <div id="chats-list" class="flex-1 overflow-y-auto px-2 py-1 space-y-1 max-h-[35%] border-b border-slate-50">
-                </div>
+            <div id="chats-list" class="flex-1 overflow-y-auto px-2 py-1 space-y-1 max-h-[35%] border-b border-slate-50"></div>
 
             <div class="p-4 font-bold text-[11px] text-slate-400 uppercase tracking-widest mt-2">Инструменты</div>
             <div id="tools-container" class="px-3 space-y-2 overflow-y-auto max-h-[25%]"></div>
@@ -104,7 +119,6 @@
             <div class="p-4 sm:p-6 bg-white border-t border-slate-200 shadow-[0_-4px_20px_rgba(0,0,0,0.02)]">
                 <div class="max-w-4xl mx-auto flex items-end gap-3 bg-slate-50 border border-slate-300 rounded-2xl p-2 focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition-all shadow-sm">
                     <textarea id="chat-input" placeholder="Введите сообщение..." rows="1" class="w-full max-h-32 bg-transparent outline-none resize-none py-3 px-4 text-slate-700 text-sm"></textarea>
-                    
                     <button id="send-btn" class="bg-gradient-to-r from-indigo-500 to-purple-500 text-white p-3 rounded-xl hover:scale-105 transition-all shadow-md flex items-center justify-center min-w-[44px] min-h-[44px]">
                         <div id="btn-icon-container">
                             <i data-lucide="send" class="w-5 h-5"></i>
