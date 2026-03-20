@@ -6,86 +6,78 @@ const state = {
     ]
 };
 
-const TOOLS = [
-    { name: 'Объяснить концепцию', icon: 'sparkles', prompt: 'Объясни мне простыми словами концепцию: ' },
-    { name: 'Решить по шагам', icon: 'check-square', prompt: 'Реши эту задачу максимально подробно по шагам: ' },
-    { name: 'Проверить грамматику', icon: 'type', prompt: 'Проверь ошибки и стиль в этом тексте: ' },
-    { name: '✨ Быстрый квиз', icon: 'help-circle', prompt: 'Сгенерируй тест из 3 вопросов для проверки знаний по теме: ' }
-];
-
-const chatMessages = document.getElementById('chat-messages');
-const chatScrollArea = document.getElementById('chat-scroll-area');
-const chatInput = document.getElementById('chat-input');
+// Проверяем, какие ID на самом деле есть в твоем HTML
+// Если у тебя в HTML id="user-input", поменяй 'chat-input' на 'user-input' ниже
+const chatInput = document.getElementById('chat-input') || document.getElementById('user-input');
 const sendBtn = document.getElementById('send-btn');
+const chatMessages = document.getElementById('chat-messages');
 const typingIndicator = document.getElementById('ai-typing-indicator');
 
 function init() {
-    lucide.createIcons();
-    renderTools();
-    renderMessages();
+    if (typeof lucide !== 'undefined') lucide.createIcons();
     
-    // Listeners
-    document.getElementById('subject-select').addEventListener('change', (e) => state.subject = e.target.value);
-    document.getElementById('level-select').addEventListener('change', (e) => state.level = e.target.value);
-    sendBtn.addEventListener('click', sendMessage);
-    chatInput.addEventListener('keydown', (e) => { if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
-}
+    // Подключаем выбор предмета и уровня
+    const subSelect = document.getElementById('subject-select');
+    const lvlSelect = document.getElementById('level-select');
+    
+    if(subSelect) subSelect.addEventListener('change', (e) => state.subject = e.target.value);
+    if(lvlSelect) lvlSelect.addEventListener('change', (e) => state.level = e.target.value);
+    
+    // Кнопка отправки
+    if(sendBtn) sendBtn.addEventListener('click', sendMessage);
+    
+    // Клавиша Enter
+    if(chatInput) {
+        chatInput.addEventListener('keydown', (e) => { 
+            if(e.key === 'Enter' && !e.shiftKey) { 
+                e.preventDefault(); 
+                sendMessage(); 
+            } 
+        });
+    }
 
-function renderTools() {
-    const container = document.getElementById('tools-container');
-    container.innerHTML = TOOLS.map(tool => `
-        <button onclick="useTool('${tool.prompt}')" class="flex items-center gap-3 p-3 w-full text-left bg-white border border-slate-100 rounded-xl hover:border-indigo-200 hover:bg-indigo-50 transition-all group shadow-sm">
-            <div class="p-2 bg-slate-50 text-slate-400 rounded-lg group-hover:bg-indigo-100 group-hover:text-indigo-600 transition-colors">
-                <i data-lucide="${tool.icon}" class="w-4 h-4"></i>
-            </div>
-            <span class="text-sm font-medium text-slate-600 group-hover:text-indigo-700 transition-colors">${tool.name}</span>
-        </button>
-    `).join('');
-    lucide.createIcons();
+    renderMessages();
 }
 
 function formatContent(text) {
+    // Делаем текст красивым (жирный, переносы строк)
     return text
-        .replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-slate-900">$1</strong>')
-        .replace(/\$\$(.*?)\$\$/gs, '<div class="math-block">$1</div>')
-        .replace(/\$(.*?)\$/g, '<code class="math-inline">$1</code>')
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
         .replace(/\n/g, '<br>');
 }
 
 function renderMessages() {
+    if(!chatMessages) return;
+    
     chatMessages.innerHTML = state.messages.map(msg => `
-        <div class="flex gap-4 max-w-4xl mx-auto ${msg.role === 'user' ? 'flex-row-reverse' : ''} animate-slide-up">
-            <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0 shadow-sm ${msg.role === 'user' ? 'bg-gradient-to-br from-indigo-500 to-purple-500 text-white' : 'bg-white border border-slate-200 text-indigo-500'}">
-                <i data-lucide="${msg.role === 'user' ? 'user' : 'bot'}" class="w-5 h-5"></i>
-            </div>
-            <div class="flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'} max-w-[85%]">
-                <div class="px-5 py-3 rounded-2xl shadow-sm text-[15px] leading-relaxed ${msg.role === 'user' ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-tr-sm' : 'bg-white border border-slate-200 text-slate-700 rounded-tl-sm'}">
-                    ${formatContent(msg.parts[0].text)}
-                </div>
+        <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-direction: ${msg.role === 'user' ? 'row-reverse' : 'row'}">
+            <div style="padding: 10px; border-radius: 15px; max-width: 80%; background: ${msg.role === 'user' ? '#6366f1' : '#f1f5f9'}; color: ${msg.role === 'user' ? 'white' : 'black'}">
+                ${formatContent(msg.parts[0].text)}
             </div>
         </div>
     `).join('');
-    lucide.createIcons();
+    
     scrollToBottom();
 }
 
 function scrollToBottom() {
-    chatScrollArea.scrollTo({ top: chatScrollArea.scrollHeight, behavior: 'smooth' });
+    if(chatMessages) {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
 }
 
 async function sendMessage() {
     const text = chatInput.value.trim();
-    if (!text) return;
+    if (!text || sendBtn.disabled) return;
 
-    // Блокируем кнопку на время запроса
+    // Блокируем интерфейс
     sendBtn.disabled = true;
-
     state.messages.push({ role: 'user', parts: [{ text }] });
     chatInput.value = '';
     renderMessages();
 
-    // Показываем красивый индикатор загрузки с прыгающими точками
-    typingIndicator.classList.remove('hidden');
+    // Показываем индикатор "Думает"
+    if(typingIndicator) typingIndicator.classList.remove('hidden');
     scrollToBottom();
 
     try {
@@ -102,28 +94,23 @@ async function sendMessage() {
 
         const data = await response.json();
         
-        // Скрываем индикатор перед рендером ответа
-        typingIndicator.classList.add('hidden');
+        if(typingIndicator) typingIndicator.classList.add('hidden');
 
-        if (data.error) throw new Error(data.error);
-
-        state.messages.push({ role: 'model', parts: [{ text: data.text }] });
+        if (data.text) {
+            state.messages.push({ role: 'model', parts: [{ text: data.text }] });
+        } else {
+            state.messages.push({ role: 'model', parts: [{ text: "Ошибка: Google не ответил." }] });
+        }
         renderMessages();
     } catch (err) {
-        typingIndicator.classList.add('hidden');
-        
-        // В случае ошибки показываем системное сообщение
-        state.messages.push({ role: 'model', parts: [{ text: "К сожалению, возникла ошибка при подключении к серверу. Попробуйте еще раз." }] });
+        if(typingIndicator) typingIndicator.classList.add('hidden');
+        state.messages.push({ role: 'model', parts: [{ text: "Сбой сети. Попробуй еще раз." }] });
         renderMessages();
-        console.error(err);
     } finally {
         sendBtn.disabled = false;
+        chatInput.focus();
     }
 }
 
-window.useTool = (prompt) => {
-    chatInput.value = prompt;
-    chatInput.focus();
-};
-
+// Запуск
 init();
