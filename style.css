@@ -1,7 +1,5 @@
 /* Плавный скролл */
-#chat-messages {
-    scroll-behavior: smooth;
-}
+#chat-scroll-area { scroll-behavior: smooth; }
 
 /* Красивый скроллбар */
 ::-webkit-scrollbar { width: 6px; }
@@ -10,7 +8,7 @@
 ::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
 
 /* Анимация появления сообщений */
-.message-appear {
+.animate-slide-up {
     animation: slideUp 0.3s ease-out forwards;
 }
 
@@ -33,9 +31,60 @@
 
 .math-inline {
     font-family: monospace;
-    background: #eff6ff;
-    color: #1d4ed8;
+    background: #eef2ff;
+    color: #4f46e5;
     padding: 0.1rem 0.3rem;
     border-radius: 0.25rem;
-    border: 1px solid #dbeafe;
+    border: 1px solid #c7d2fe;
+}
+
+/* --- НОВЫЕ СТИЛИ --- */
+
+/* 1. Пульсация логотипа */
+.logo-pulse {
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+.logo-pulse:hover {
+    transform: scale(1.08) rotate(5deg);
+    filter: drop-shadow(0 0 10px rgba(168, 85, 247, 0.4));
+}
+
+/* 2. Glassmorphism виджет Grid Ent. */
+.gemini-promo {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    transition: all 0.3s ease;
+}
+.gemini-promo:hover {
+    border-color: rgba(168, 85, 247, 0.4);
+    box-shadow: 0 0 15px rgba(168, 85, 247, 0.15), inset 0 0 10px rgba(99, 102, 241, 0.05);
+}
+
+/* 3. Анимация печатания (Typing Indicator) */
+.hidden { display: none !important; }
+
+.typing-indicator {
+    display: flex;
+    gap: 6px;
+    padding: 16px 20px;
+    align-items: center;
+    width: fit-content;
+}
+
+.typing-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    animation: typing-bounce 1.4s infinite ease-in-out both;
+}
+
+.typing-dot:nth-child(1) { animation-delay: -0.32s; }
+.typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes typing-bounce {
+    0%, 80%, 100% { transform: scale(0); opacity: 0.4; }
+    40% { transform: scale(1); opacity: 1; }
 }
