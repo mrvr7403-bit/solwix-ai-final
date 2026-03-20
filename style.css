@@ -1,4 +1,9 @@
-/* Анимации */
+/* --- БАЗОВЫЕ НАСТРОЙКИ --- */
+body {
+    overscroll-behavior: none; /* Отключаем "резиновый" скролл на iOS */
+}
+
+/* --- АНИМАЦИИ ЛОГОТИПА И ОЖИДАНИЯ --- */
 .logo-wrapper { transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 .logo-container:hover .logo-wrapper { transform: rotate(15deg) scale(1.1); }
 
@@ -9,50 +14,65 @@
     100% { transform: rotate(360deg) scale(0.9); opacity: 0.6; }
 }
 
-/* Скроллбар */
-::-webkit-scrollbar { width: 4px; }
+/* --- СКРОЛЛБАР (ТОНКИЙ) --- */
+::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
 
-/* Сообщения */
+/* --- ПУЗЫРИ СООБЩЕНИЙ --- */
 .ai-bubble { background: white; border: 1px solid #f1f5f9; border-radius: 18px 18px 18px 4px; }
 .user-bubble { background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); color: white; border-radius: 18px 18px 4px 18px; }
 
-/* Адаптивность панели */
+/* --- АДАПТИВНОСТЬ БОКОВОЙ ПАНЕЛИ --- */
 @media (max-width: 639px) {
     #sidebar {
         position: fixed;
-        left: 0;
-        top: 0;
-        bottom: 0;
+        left: 0; top: 0; bottom: 0;
         transform: translateX(-100%);
         box-shadow: 10px 0 30px rgba(0,0,0,0.1);
     }
-    #sidebar.active {
-        transform: translateX(0);
-    }
+    #sidebar.active { transform: translateX(0); }
+    /* Пузыри почти на всю ширину на мобилках */
     .ai-bubble, .user-bubble { max-width: 92% !important; }
 }
 
-/* Квадрат кнопки стоп */
-.stop-square {
-    width: 14px;
-    height: 14px;
-    background-color: white;
-    border-radius: 2px;
-    animation: pulse-stop 2s infinite;
-}
-@keyframes pulse-stop {
-    50% { transform: scale(0.85); opacity: 0.8; }
-}
+/* --- СЛУЖЕБНЫЕ КЛАССЫ --- */
+.hidden { display: none !important; }
+
+/* Квадрат кнопки СТОП */
+.stop-square { width: 14px; height: 14px; background-color: white; border-radius: 2px; }
 
 /* Курсор печати */
 .typing-cursor {
     display: inline-block;
-    width: 2px;
-    height: 1em;
-    background: #6366f1;
-    margin-left: 2px;
-    animation: blink 0.8s infinite;
-    vertical-align: middle;
+    width: 2px; height: 1em;
+    background: #6366f1; margin-left: 2px;
+    animation: blink 0.8s infinite; vertical-align: middle;
 }
 @keyframes blink { 50% { opacity: 0; } }
+
+/* --- [НОВОЕ] ПРЕВЫШЕНИЕ КВОТ (Error 429) --- */
+/* Кнопка становится красной и "заблокированной" */
+#send-btn.quota-exceeded {
+    background: none !important; /* Убираем градиент */
+    background-color: #ef4444 !important; /* Делаем красной (Tailwind bg-red-500) */
+    opacity: 0.7;
+    cursor: not-allowed; /* Курсор "запрещено" */
+}
+
+#send-btn.quota-exceeded:hover {
+    transform: scale(1) !important; /* Отключаем увеличение при наведении */
+    box-shadow: none !important;
+}
+
+/* Окрашиваем иконку внутри в белый */
+#send-btn.quota-exceeded i {
+    color: white !important;
+}
+
+/* Спец. стиль для уведомления об ошибке квот в чате */
+.quota-message { animation: fade-in-up 0.5s ease; }
+@keyframes fade-in-up {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

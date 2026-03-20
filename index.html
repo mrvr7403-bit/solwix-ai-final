@@ -51,15 +51,12 @@
                 <option value="Русский язык">Русский язык</option>
                 <option value="Литература">Литература</option>
                 <option value="Английский язык">Английский язык</option>
-                <option value="Астрономия">Астрономия</option>
             </select>
 
             <select id="level-select" class="bg-indigo-50 border border-indigo-100 text-indigo-700 py-1.5 px-2 sm:px-3 rounded-lg text-[11px] sm:text-sm font-medium outline-none w-24 sm:w-auto truncate shadow-sm transition-all">
-                <option value="Начальная школа (1-4 кл)">Начальная</option>
-                <option value="Средняя школа (5-9 кл)" selected>Средняя (5-9)</option>
-                <option value="Старшая школа (10-11 кл)">Старшая (10-11)</option>
-                <option value="Колледж / СПО">Колледж / СПО</option>
-                <option value="ВУЗ (Бакалавриат)">ВУЗ</option>
+                <option value="Средняя школа" selected>Средняя (5-9)</option>
+                <option value="Старшая школа">Старшая (10-11)</option>
+                <option value="ВУЗ">ВУЗ</option>
             </select>
         </div>
     </header>
@@ -72,18 +69,18 @@
                     <div class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center text-indigo-600 font-bold shadow-sm" id="user-avatar">G</div>
                     <div class="flex flex-col">
                         <span class="text-sm font-bold text-slate-700" id="username-display">Гость</span>
-                        <button onclick="showAuthModal()" class="text-[11px] text-indigo-500 hover:text-indigo-600 font-medium text-left transition-colors" id="auth-btn-text">Войти в аккаунт</button>
+                        <button onclick="showAuthModal()" class="text-[11px] text-indigo-500 hover:text-indigo-600 font-medium text-left transition-colors" id="auth-btn-text">Войти</button>
                     </div>
                 </div>
             </div>
 
             <div class="p-4 font-bold text-[11px] text-slate-400 uppercase tracking-widest flex justify-between items-center">
                 Твои чаты
-                <button onclick="createNewChat()" class="hover:text-indigo-500 transition-colors p-1" title="Новый чат">
+                <button onclick="createNewChat()" class="hover:text-indigo-500 transition-colors p-1">
                     <i data-lucide="plus-square" class="w-4 h-4"></i>
                 </button>
             </div>
-            <div id="chats-list" class="flex-1 overflow-y-auto px-2 py-1 space-y-1 border-b border-slate-50"></div>
+            <div id="chats-list" class="flex-1 overflow-y-auto px-2 py-1 space-y-1"></div>
 
             <div class="p-4 font-bold text-[11px] text-slate-400 uppercase tracking-widest mt-2">Инструменты</div>
             <div id="tools-container" class="px-3 space-y-2"></div>
@@ -91,7 +88,7 @@
             <div class="px-3 py-4">
                 <button onclick="shareChat()" class="flex items-center gap-3 p-3 w-full text-left rounded-xl hover:bg-slate-50 transition-all text-slate-600 group">
                     <i data-lucide="share-2" class="w-4 h-4 group-hover:text-indigo-500 transition-colors"></i>
-                    <span class="text-sm font-medium group-hover:text-slate-800">Поделиться чатом</span>
+                    <span class="text-sm font-medium group-hover:text-slate-800">Поделиться</span>
                 </button>
             </div>
         </aside>
@@ -108,20 +105,20 @@
                             <polygon points="50,5 60,40 95,50 60,60 50,95 40,60 5,50 40,40" fill="url(#grad-solwix-head)" />
                         </svg>
                     </div>
-                    <span id="typing-text" class="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Обработка...</span>
+                    <span id="typing-text" class="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Solwix думает...</span>
                 </div>
             </div>
 
             <div class="p-4 sm:p-6 bg-white border-t border-slate-200 shadow-lg">
                 <div class="max-w-4xl mx-auto flex items-end gap-2 sm:gap-3 bg-slate-50 border border-slate-300 rounded-2xl p-1.5 sm:p-2 focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition-all shadow-sm">
                     <textarea id="chat-input" placeholder="Задай вопрос Solwix..." rows="1" class="w-full max-h-32 bg-transparent outline-none resize-none py-3 px-3 sm:px-4 text-slate-700 text-sm"></textarea>
+                    
                     <button id="send-btn" class="bg-gradient-to-r from-indigo-500 to-purple-500 text-white p-3 rounded-xl hover:scale-105 active:scale-95 transition-all shadow-md flex items-center justify-center min-w-[44px] min-h-[44px]">
                         <div id="btn-icon-container">
                             <i data-lucide="send" class="w-5 h-5"></i>
                         </div>
                     </button>
                 </div>
-                <p class="text-[10px] text-center text-slate-400 mt-3 hidden sm:block">Solwix AI может ошибаться. Перепроверяйте важную информацию.</p>
             </div>
         </main>
     </div>
@@ -129,12 +126,12 @@
     <div id="auth-modal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl p-8 w-full max-w-sm shadow-2xl border border-slate-100">
             <h2 class="text-2xl font-bold text-slate-800 mb-2 text-center">Solwix ID</h2>
-            <p class="text-xs text-center text-slate-500 mb-6">Синхронизируйте историю ваших чатов</p>
+            <p class="text-xs text-center text-slate-500 mb-6">Синхронизация профиля</p>
             <div class="space-y-4">
                 <input type="text" id="auth-login" placeholder="Логин" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
                 <input type="password" id="auth-pass" placeholder="Пароль" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
-                <button onclick="handleAuth()" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-3 rounded-xl font-bold hover:opacity-90 transition-all shadow-md">Войти</button>
-                <button onclick="hideAuthModal()" class="w-full text-slate-400 text-sm hover:text-slate-600 transition-colors text-center">Продолжить как гость</button>
+                <button onclick="handleAuth()" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-3 rounded-xl font-bold hover:opacity-90 shadow-md">Войти</button>
+                <button onclick="hideAuthModal()" class="w-full text-slate-400 text-sm hover:text-slate-600 transition-colors text-center">Отмена</button>
             </div>
         </div>
     </div>
