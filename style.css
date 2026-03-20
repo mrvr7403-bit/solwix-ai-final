@@ -1,35 +1,15 @@
-/* Анимация лого в шапке */
-.logo-container:hover .logo-wrapper {
-    transform: rotate(15deg) scale(1.1);
-}
-.logo-wrapper {
-    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
+/* Пульсация логотипа в шапке при наведении */
+.logo-wrapper { transition: transform 0.3s ease-in-out; }
+.logo-container:hover .logo-wrapper { transform: rotate(15deg) scale(1.1); }
 
-/* Анимация вращения при раздумьях */
-.thinking-logo {
-    animation: spin-and-glow 2s infinite linear;
-}
-
-@keyframes spin-and-glow {
-    0% { transform: rotate(0deg) scale(1); filter: drop-shadow(0 0 5px rgba(99, 102, 241, 0.5)); }
-    50% { transform: rotate(180deg) scale(1.2); filter: drop-shadow(0 0 15px rgba(168, 85, 247, 0.8)); }
-    100% { transform: rotate(360deg) scale(1); filter: drop-shadow(0 0 5px rgba(99, 102, 241, 0.5)); }
-}
-
-/* Кастомный скроллбар */
+/* Кастомный, ровный скроллбар */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+::-webkit-scrollbar-track { background: #f8fafc; }
 
+/* Служебный класс для скрытия/показа */
 .hidden { display: none !important; }
 
-/* Стиль сообщений */
-.ai-bubble {
-    background: white;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
-}
-.user-bubble {
-    background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-    color: white;
-}
+/* Стиль блоков ответов */
+.ai-message-bubble { background: white; border: 1px solid #e2e8f0; }
+.user-message-bubble { background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); color: white; }
