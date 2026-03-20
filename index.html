@@ -3,49 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solwix AI — Академический помощник (Powered by Gemini)</title>
+    <title>Solwix AI — Академический помощник</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        /* Анимация пульсации для логотипа Gemini */
-        @keyframes gemini-pulse {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.1); opacity: 0.8; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        .gemini-logo-anim {
-            animation: gemini-pulse 2s infinite ease-in-out;
-        }
-        /* Анимация появления для рекламного блока */
-        @keyframes fade-in-up {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in {
-            animation: fade-in-up 0.8s ease-out forwards;
-        }
-    </style>
 </head>
 <body class="bg-slate-50 text-slate-800 font-['Inter'] h-screen flex flex-col overflow-hidden">
 
     <header class="flex items-center justify-between px-6 py-4 bg-white border-b border-slate-200 shadow-sm z-20 shrink-0">
         <div class="flex items-center gap-3">
-            <div class="flex items-center gap-2 text-blue-600 bg-blue-50 p-2 rounded-xl border border-blue-100">
-                <i data-lucide="graduation-cap" class="w-6 h-6"></i>
-                <h1 class="text-xl font-bold tracking-tight text-slate-900">Solwix <span class="font-light text-blue-600">AI</span></h1>
+            <div class="flex items-center gap-3 bg-slate-50/50 p-2 rounded-xl border border-indigo-50 hover:border-indigo-100 transition-colors cursor-pointer group">
+                <svg id="logo-svg" width="36" height="36" viewBox="0 0 100 100" class="logo-pulse">
+                    <defs>
+                        <linearGradient id="grad-solwix" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#a855f7;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <circle cx="50" cy="50" r="45" fill="none" stroke="url(#grad-solwix)" stroke-width="2" stroke-opacity="0.4" />
+                    <polygon points="50,5 60,40 95,50 60,60 50,95 40,60 5,50 40,40" fill="url(#grad-solwix)" />
+                </svg>
+                <h1 class="text-xl font-bold tracking-tight text-slate-900">Solwix <span class="font-light bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-500">AI</span></h1>
             </div>
-            <span class="hidden md:inline text-[11px] text-slate-400 uppercase tracking-wider font-medium ml-2">Powered by Gemini AI</span>
         </div>
 
         <div class="flex items-center gap-3">
-            <select id="subject-select" class="bg-slate-50 border border-slate-200 text-slate-700 py-2 px-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all font-medium text-sm w-32 sm:w-40 shadow-sm">
+            <select id="subject-select" class="bg-slate-50 border border-slate-200 text-slate-700 py-2 px-3 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-medium text-sm w-32 sm:w-40 shadow-sm">
                 <option value="Математика">Математика</option>
                 <option value="Физика">Физика</option>
                 <option value="История">История</option>
                 <option value="Языки">Языки</option>
             </select>
-            <select id="level-select" class="bg-blue-50 border border-blue-100 text-blue-700 py-2 px-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all font-medium text-sm w-28 sm:w-32 shadow-sm">
+            <select id="level-select" class="bg-indigo-50 border border-indigo-100 text-indigo-700 py-2 px-3 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-medium text-sm w-28 sm:w-32 shadow-sm">
                 <option value="Младшая школа">Младшая</option>
                 <option value="Средняя школа" selected>Средняя</option>
                 <option value="Профи/ВУЗ">Профи</option>
@@ -55,53 +45,40 @@
 
     <div class="flex flex-1 overflow-hidden relative">
         <main class="flex-1 flex flex-col min-w-0 bg-[#f8fafc]">
-            <div id="chat-messages" class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
+            <div class="flex-1 overflow-y-auto p-4 sm:p-6" id="chat-scroll-area">
+                <div id="chat-messages" class="space-y-6"></div>
+                
+                <div id="ai-typing-indicator" class="typing-indicator hidden mt-6 ml-4 bg-white border border-slate-200 rounded-2xl rounded-tl-sm shadow-sm">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
                 </div>
+            </div>
 
             <div class="p-4 sm:p-6 bg-white border-t border-slate-200">
-                <div class="max-w-4xl mx-auto flex items-end gap-3 bg-slate-50 border border-slate-300 rounded-2xl p-2 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 transition-all shadow-sm">
+                <div class="max-w-4xl mx-auto flex items-end gap-3 bg-slate-50 border border-slate-300 rounded-2xl p-2 focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition-all shadow-sm">
                     <textarea id="chat-input" placeholder="Задай вопрос Solwix..." rows="1" class="w-full max-h-40 bg-transparent outline-none resize-none py-3 px-4 text-slate-700"></textarea>
-                    <button id="send-btn" class="bg-blue-600 text-white p-3 rounded-xl hover:bg-blue-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md">
+                    <button id="send-btn" class="bg-gradient-to-r from-indigo-500 to-purple-500 text-white p-3 rounded-xl hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md">
                         <i data-lucide="send" class="w-5 h-5"></i>
                     </button>
                 </div>
-                <p class="text-center text-[10px] text-slate-400 mt-3 uppercase tracking-widest font-medium">© Solwix Engine</p>
+                <p class="text-center text-[10px] text-slate-400 mt-3 uppercase tracking-widest font-medium">Powered by Solwix Engine</p>
             </div>
         </main>
 
-        <aside class="hidden lg:flex w-80 bg-white border-l border-slate-200 flex-col shrink-0 overflow-y-auto">
+        <aside class="hidden lg:flex w-72 bg-white border-l border-slate-200 flex-col shrink-0 relative">
+            <div class="p-5 border-b border-slate-100 flex items-center gap-2 font-semibold text-slate-700">
+                <i data-lucide="zap" class="text-indigo-500 w-5 h-5"></i>
+                Инструменты
+            </div>
+            <div id="tools-container" class="p-4 space-y-3 flex-1 overflow-y-auto"></div>
             
-            <div class="p-6 m-4 mt-6 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl text-white shadow-xl animate-fade-in border border-blue-700">
-                <div class="flex items-center gap-4 mb-5">
-                    <div class="p-3 bg-white/20 rounded-2xl border border-white/30 shadow-inner gemini-logo-anim">
-                        <i data-lucide="brain-circuit" class="w-8 h-8 text-white"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-xs text-blue-200 uppercase tracking-widest font-bold">Collab Partner</h3>
-                        <p class="text-2xl font-extrabold tracking-tight">Gemini AI</p>
-                    </div>
+            <div class="gemini-promo mt-auto m-4 p-4 rounded-xl flex flex-col gap-2 z-10">
+                <div class="flex items-center gap-2 text-indigo-400 font-bold">
+                    <span class="text-xl">✦</span>
+                    <span class="text-xs tracking-wide uppercase bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400">Powered by Gemini 2.5</span>
                 </div>
-                
-                <p class="text-sm text-blue-100 leading-relaxed mb-6 font-medium">
-                    Этот проект был создан в <strong class="text-white">соавторстве с Gemini AI</strong>. Наша разработка заняла всего <strong class="text-white font-bold text-lg">1 ВЕЧЕР</strong> вместо месяца работы целой команды. Мы доказали: ИИ + Идея = Мгновенный результат!
-                </p>
-                
-                <a href="https://gemini.google.com" target="_blank" class="block text-center w-full bg-white text-blue-700 font-bold py-3.5 px-6 rounded-xl hover:bg-blue-50 hover:shadow-lg transition-all text-sm group">
-                    Попробовать силу Gemini 
-                    <i data-lucide="arrow-right" class="w-4 h-4 inline ml-1 group-hover:translate-x-1 transition-transform"></i>
-                </a>
-            </div>
-
-            <div class="p-5 border-t border-slate-100 mt-2 flex items-center gap-2 font-semibold text-slate-700">
-                <i data-lucide="zap" class="text-blue-600 w-5 h-5"></i>
-                Быстрые инструменты
-            </div>
-
-            <div id="tools-container" class="p-4 space-y-3 flex-1">
-                </div>
-
-            <div class="p-4 mt-auto border-t border-slate-100 bg-slate-50 text-center">
-                <p class="text-[10px] text-slate-500 uppercase tracking-widest">Solwix & Gemini. 2024</p>
+                <p class="text-[10px] text-slate-500 uppercase tracking-widest leading-relaxed">Интеллект нового поколения от Google и Grid Ent.</p>
             </div>
         </aside>
     </div>
