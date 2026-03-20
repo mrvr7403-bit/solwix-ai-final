@@ -1,26 +1,44 @@
 export default async function handler(req, res) {
-  const apiKey = process.env.GEMINI_KEY;
-  if (!apiKey) return res.status(200).json({ text: "Ошибка: Ключ не найден." });
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   try {
-    // Мы идем по адресу, который просто возвращает список доступных моделей
-    const listUrl = `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`;
-    
-    const response = await fetch(listUrl);
+    const { message, subject, level, history } = req.body;
+    const apiKey = process.env.GEMINI_KEY;
+
+    if (!apiKey) return res.status(200).json({ text: "Ошибка: Ключ не найден." });
+
+    // Используем модель из твоего списка!
+    const model = "gemini-2.5-flash"; 
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+
+    const payload = {
+      contents: [
+        { role: "user", parts: [{ text: `Ты — Solwix AI. Предмет: ${subject}. Уровень: ${level}. Отвечай на русском.` }] },
+        { role: "model", parts: [{ text: "Принято! Я Solwix AI." }] },
+        ...(history || []).map(m => ({ 
+            role: m.role === 'model' ? 'model' : 'user', 
+            parts: [{ text: m.parts[0].text }] 
+        })),
+        { role: "user", parts: [{ text: message }] }
+      ]
+    };
+
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
     const data = await response.json();
 
     if (data.error) {
-      return res.status(200).json({ text: `Ошибка при получении списка: ${data.error.message}` });
+      return res.status(200).json({ text: `Google (${model}) ворчит: ${data.error.message}` });
     }
 
-    // Собираем названия всех моделей, которые разрешил Google
-    const modelNames = data.models.map(m => m.name.replace('models/', '')).join(', ');
-
-    return res.status(200).json({ 
-      text: `Google говорит, что тебе доступны только эти модели: [ ${modelNames} ]. Скопируй этот список и пришли мне!` 
-    });
+    const aiText = data.candidates?.[0]?.content?.parts?.[0]?.text || "Пусто.";
+    return res.status(200).json({ text: aiText });
 
   } catch (error) {
-    return res.status(200).json({ text: "Системная ошибка диагностики: " + error.message });
+    return res.status(200).json({ text: "Ошибка: " + error.message });
   }
 }
